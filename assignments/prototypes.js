@@ -34,7 +34,11 @@ GameObject.prototype.destroy = function() {
 
 function CharacterStats(stats) {
   this.healthPoints = stats.healthPoints
+  GameObject.call(this, stats);
 }
+//JOSEPH PLEASE HELP ME UNDERSTAND BELOW!!! mental note for 1 on 1
+CharacterStats.prototype = Object.create (GameObject.prototype);
+
 CharacterStats.prototype.takeDamage = function() {
   return `${this.name} took damage.`;
 }
@@ -51,8 +55,12 @@ CharacterStats.prototype.takeDamage = function() {
 function Humanoid(humanAttributes) {
   this.team = humanAttributes.team,
   this.weapons = humanAttributes.weapons,
-  this.language = humanAttributes.language
+  this.language = humanAttributes.language,
+  CharacterStats.call(this, humanAttributes);
 }
+
+Humanoid.prototype = Object.create(CharacterStats.prototype);
+
 Humanoid.prototype.greet = function() {
   return `${this.name} offers a greeting in ${this.language}`;
 }
@@ -131,3 +139,72 @@ Humanoid.prototype.greet = function() {
   // * Create Villain and Hero constructor functions that inherit from the Humanoid constructor function.  
   // * Give the Hero and Villains different methods that could be used to remove health points from objects which could result in destruction if health gets to 0 or drops below 0;
   // * Create two new objects, one a villain and one a hero and fight it out with methods!
+
+  function Villian(villianStats) {
+    this.team = villianStats.team,
+    this.weapons = villianStats.weapons,
+    this.spell = villianStats.spell,
+    this.language = villianStats.language
+    Humanoid.call(this, villianStats);
+  }
+
+  Villian.prototype = Object.create(Humanoid.prototype);
+
+  Villian.prototype.curse = function() {
+    return `${this.name} has put a ${this.spell} on you in ${this.language}!`;
+  }
+
+  function Hero(heroStats) {
+    this.team = heroStats.team,
+    this.weapons = heroStats.weapons,
+    this.language = heroStats.language,
+    Humanoid.call(this, heroStats);
+  }
+
+  Hero.prototype = Object.create(Humanoid.prototype);
+
+  Hero.prototype.destroyEvil = function() {
+    return `${this.name} has called upon the powers of the Gods and has destoryed all evil in ${this.language}!`;
+  }
+
+  Hero.prototype.useWeapon = function() {
+    return `${this.name} has used his ${this.weapons} to finish off Scully!`;
+  }
+
+  const geralt = new Hero({
+    createdAt: new Date(),
+    dimensions: {
+      length: 5,
+      width: 3,
+      height: 8,
+    },
+    healthPoints: 100,
+    name: 'Geralt',
+    team: 'Tamriel',
+    weapons: [
+      'Great Sword'
+    ],
+    language: 'Common Tongue',
+  });
+
+  const scully = new Villian({
+    createdAt: new Date(),
+    dimensions: {
+      length: 6,
+      width: 5,
+      height: 10,
+    },
+    healthPoints: 100,
+    name: 'Scully',
+    team: 'The Underworld',
+    spell: 'The Curse of Heartburn',
+    weapons: [
+      'Cursed Blade',
+      'Dark Staff',
+    ],
+    language: 'Complete Gibberish',
+  });
+
+  console.log(scully.curse());
+  console.log(geralt.destroyEvil());
+  console.log(geralt.useWeapon());
